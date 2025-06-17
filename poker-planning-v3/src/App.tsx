@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { Container } from "./Container";
+import { PokerGame } from "./PokerGame";
 
 function App() {
   return (
     <>
-      <Container />
+      <PokerGame />
     </>
   );
 }

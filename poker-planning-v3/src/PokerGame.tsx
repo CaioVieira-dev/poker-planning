@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,16 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-export function Container() {
-  return (
-    <div className="flex min-h-screen w-full justify-center bg-slate-500">
-      <div className="w-md bg-slate-300">
-        <PokerGame />
-      </div>
-    </div>
-  );
-}
+import { Container } from "./components/ui/Container";
+import { Card } from "./components/ui/Card";
 
 type playerType = {
   name: string;
@@ -43,7 +35,7 @@ const players = [
   },
 ];
 
-function PokerGame() {
+export function PokerGame() {
   const [game, setGame] = useState<playerType[]>(players);
   const possibleCards = useMemo(
     () => ["co", "?", "1", "2", "3", "5", "8", "13", "21"],
@@ -79,35 +71,20 @@ function PokerGame() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 px-4 pt-4">
-      <div className="flex flex-wrap justify-evenly gap-2">
-        {possibleCards.map((c, i) => (
-          <Card key={`${c}-${i}`} onClick={() => updatePlayerCard(1, c)}>
-            {c}
-          </Card>
-        ))}
+    <Container>
+      <div className="flex flex-col gap-4 px-4 pt-4">
+        <div className="flex flex-wrap justify-evenly gap-2">
+          {possibleCards.map((c, i) => (
+            <Card key={`${c}-${i}`} onClick={() => updatePlayerCard(1, c)}>
+              {c}
+            </Card>
+          ))}
+        </div>
+        <div className="">
+          <PlayersTable game={game} resetCard={resetCard} />
+        </div>
       </div>
-      <div className="">
-        <PlayersTable game={game} resetCard={resetCard} />
-      </div>
-    </div>
-  );
-}
-
-function Card({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-}) {
-  return (
-    <div
-      className="flex h-16 w-12 justify-center bg-slate-100 p-4 align-middle"
-      onClick={onClick}
-    >
-      {children}
-    </div>
+    </Container>
   );
 }
 
