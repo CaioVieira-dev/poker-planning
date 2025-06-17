@@ -79,8 +79,8 @@ function PokerGame() {
   }, []);
 
   return (
-    <>
-      <div className="flex flex-wrap justify-evenly gap-2 px-4 pt-4">
+    <div className="flex flex-col gap-4 px-4 pt-4">
+      <div className="flex flex-wrap justify-evenly gap-2">
         {possibleCards.map((c, i) => (
           <Card key={`${c}-${i}`} onClick={() => updatePlayerCard(1, c)}>
             {c}
@@ -90,7 +90,7 @@ function PokerGame() {
       <div className="">
         <PlayersTable game={game} resetCard={resetCard} />
       </div>
-    </>
+    </div>
   );
 }
 
