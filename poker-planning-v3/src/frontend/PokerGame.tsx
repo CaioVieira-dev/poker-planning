@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/frontend/components/ui/table";
 import { Container } from "./components/ui/Container";
 import { Card } from "./components/ui/Card";
 
