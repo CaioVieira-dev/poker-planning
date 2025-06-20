@@ -54,3 +54,5 @@ export default tseslint.config({
 ```
 
 ps: se o tailwind intellisense não estiver funcionando, adicione isso nas configs do vscode `"tailwindCSS.experimental.configFile": "poker-planning-v3/src/index.css"`
+
+Nesse projeto eu uso extensoes para ajudar na DX, você pode iniciar normalmente ou iniciar usando `ctrl + shift + p` e `Terminals: Run`

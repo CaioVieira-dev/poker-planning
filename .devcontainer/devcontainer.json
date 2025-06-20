@@ -19,7 +19,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5173],
+	"forwardPorts": [5173,3001],
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "yarn install",
 	// Configure tool-specific properties.
@@ -31,7 +31,8 @@
 				"esbenp.prettier-vscode",
 				"YoavBls.pretty-ts-errors",
 				"bradlc.vscode-tailwindcss",
-				"stivo.tailwind-fold"
+				"stivo.tailwind-fold",
+				"fabiospampinato.vscode-terminals"
 			] 
 		}
 	},

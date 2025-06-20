@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -84,6 +84,7 @@ export function PokerGame() {
           <PlayersTable game={game} resetCard={resetCard} />
         </div>
       </div>
+      <TestSocket />
     </Container>
   );
 }
@@ -118,4 +119,34 @@ function PlayersTable({
       </TableBody>
     </Table>
   );
+}
+
+import { io, Socket } from "socket.io-client";
+import { Button } from "./components/ui/button";
+
+const socket = io();
+
+function TestSocket() {
+  const socketRef = useRef<Socket>(socket);
+
+  useEffect(() => {
+    // Crie o socket *dentro* do useEffect!
+    socketRef.current = io();
+
+    socketRef.current.on("msgToClient", (msg) => {
+      console.log("Recebido do servidor:", msg);
+    });
+
+    return () => {
+      // Cleanup só da instância criada por esse componente
+      socketRef.current?.disconnect();
+    };
+  }, []);
+
+  const enviar = () => {
+    console.log("cliquei");
+    socketRef.current?.emit("msgToServer", "Mensagem testando socket!");
+  };
+
+  return <Button onClick={enviar}>Enviar mensagem</Button>;
 }

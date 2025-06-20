@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:frontend": "vite",
+    "dev:backend": "tsx watch src/backend/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -14,16 +15,20 @@
     "@tailwindcss/vite": "^4.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "lucide-react": "^0.516.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -34,6 +39,7 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
+    "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.4",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",

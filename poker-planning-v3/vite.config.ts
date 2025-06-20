@@ -13,6 +13,10 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+    proxy: {
+      "/socket.io": "http://localhost:3001",
+      "/api": "http://localhost:3001",
+    },
   },
   resolve: {
     alias: {
