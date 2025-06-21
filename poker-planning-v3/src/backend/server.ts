@@ -3,6 +3,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import { registerPokerGameSocket } from "./poker-game";
 
 const app = express();
 const server = http.createServer(app);
@@ -35,6 +36,8 @@ io.on("connection", (socket) => {
     console.log("Usuário desconectado:", socket.id);
   });
 });
+
+registerPokerGameSocket(io);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
