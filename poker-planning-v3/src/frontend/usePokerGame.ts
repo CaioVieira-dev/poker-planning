@@ -1,4 +1,4 @@
-import type { gameType, playerType } from "@/shared/poker-types";
+import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -12,35 +12,27 @@ export function usePokerGame() {
     [],
   );
 
-  const resetCard = useCallback((id: string) => {
-    setGame((prevGame) => ({
-      players:
-        prevGame?.players?.reduce<playerType[]>((acc, curr) => {
-          if (curr.id === id) {
-            acc.push({ ...curr, card: "" });
-          } else {
-            acc.push(curr);
-          }
-
-          return acc;
-        }, []) ?? [],
-    }));
-  }, []);
-
   const updatePlayerCard = useCallback((id: string, card: string) => {
-    setGame((prevGame) => ({
-      players:
-        prevGame?.players?.reduce<playerType[]>((acc, curr) => {
-          if (curr.id === id) {
-            acc.push({ ...curr, card });
-          } else {
-            acc.push(curr);
-          }
+    const sckt = socketRef?.current;
+    if (!sckt) {
+      return;
+    }
 
-          return acc;
-        }, []) ?? [],
-    }));
+    const data: setPlayerCardEventType = {
+      card,
+      gameId: "1",
+      playerId: id,
+    };
+
+    sckt.emit("setPlayerCard", data);
   }, []);
+
+  const resetCard = useCallback(
+    (id: string) => {
+      updatePlayerCard(id, "");
+    },
+    [updatePlayerCard],
+  );
 
   const connectToGame = useCallback(() => {
     const sckt = socketRef?.current;

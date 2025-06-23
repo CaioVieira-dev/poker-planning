@@ -10,3 +10,9 @@ export type playerType = {
 export type gameType = {
   players: playerType[];
 };
+
+export type setPlayerCardEventType = {
+  gameId: string;
+  playerId: string;
+  card: cardType;
+};

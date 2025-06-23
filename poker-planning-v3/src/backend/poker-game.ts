@@ -1,4 +1,9 @@
-import type { cardType, gameType, playerType } from "@/shared/poker-types";
+import type {
+  cardType,
+  gameType,
+  playerType,
+  setPlayerCardEventType,
+} from "@/shared/poker-types";
 import type { DefaultEventsMap, Server } from "socket.io";
 
 const game = {
@@ -94,19 +99,21 @@ function setPlayerCard({
 }
 function togglePlayerCardVisibility({
   gameId,
-  playerId,
   isOpen,
 }: {
   gameId: string;
-  playerId: string;
   isOpen: boolean;
 }) {
-  const playerGame = getPlayerGame(gameId, playerId);
-  if (!playerGame) {
+  const game = games.get(gameId);
+  if (!game) {
     return;
   }
 
-  playerGame.isOpen = isOpen;
+  const { players } = game;
+
+  players.forEach((p) => {
+    p.isOpen = isOpen;
+  });
 }
 
 function createGame() {
@@ -132,15 +139,7 @@ export function registerPokerGameSocket(
   io.on("connection", (socket) => {
     socket.on(
       "setPlayerCard",
-      ({
-        card,
-        gameId,
-        playerId,
-      }: {
-        gameId: string;
-        playerId: string;
-        card: cardType;
-      }) => {
+      ({ card, gameId, playerId }: setPlayerCardEventType) => {
         setPlayerCard({
           card,
           gameId,
@@ -152,20 +151,11 @@ export function registerPokerGameSocket(
     );
 
     socket.on(
-      "togglePlayerCardVisibility",
-      ({
-        isOpen,
-        gameId,
-        playerId,
-      }: {
-        gameId: string;
-        playerId: string;
-        isOpen: boolean;
-      }) => {
+      "togglePlayersCardVisibility",
+      ({ isOpen, gameId }: { gameId: string; isOpen: boolean }) => {
         togglePlayerCardVisibility({
           gameId,
           isOpen,
-          playerId,
         });
 
         io.emit("getGame", games.get(gameId));
