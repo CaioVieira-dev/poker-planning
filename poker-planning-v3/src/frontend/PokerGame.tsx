@@ -13,7 +13,7 @@ export function PokerGame() {
       <div className="flex flex-col gap-4 px-4 pt-4">
         <div className="flex flex-wrap justify-evenly gap-2">
           {possibleCards.map((c, i) => (
-            <Card key={`${c}-${i}`} onClick={() => updatePlayerCard("1", c)}>
+            <Card key={`${c}-${i}`} onClick={() => updatePlayerCard(c)}>
               {c}
             </Card>
           ))}

@@ -1,4 +1,5 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
+import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -12,27 +13,37 @@ export function usePokerGame() {
     [],
   );
 
-  const updatePlayerCard = useCallback((id: string, card: string) => {
-    const sckt = socketRef?.current;
-    if (!sckt) {
-      return;
+  const getUserId = useCallback(() => {
+    const STORAGE_KEY = "poker-user-id";
+    let userId = localStorage.getItem(STORAGE_KEY);
+    if (!userId) {
+      userId = nanoid();
+      localStorage.setItem(STORAGE_KEY, userId);
     }
-
-    const data: setPlayerCardEventType = {
-      card,
-      gameId: "1",
-      playerId: id,
-    };
-
-    sckt.emit("setPlayerCard", data);
+    return userId;
   }, []);
 
-  const resetCard = useCallback(
-    (id: string) => {
-      updatePlayerCard(id, "");
+  const updatePlayerCard = useCallback(
+    (card: string) => {
+      const sckt = socketRef?.current;
+      if (!sckt) {
+        return;
+      }
+
+      const data: setPlayerCardEventType = {
+        card,
+        gameId: "1",
+        playerId: getUserId(),
+      };
+
+      sckt.emit("setPlayerCard", data);
     },
-    [updatePlayerCard],
+    [getUserId],
   );
+
+  const resetCard = useCallback(() => {
+    updatePlayerCard(getUserId());
+  }, [getUserId, updatePlayerCard]);
 
   const connectToGame = useCallback(() => {
     const sckt = socketRef?.current;
@@ -40,8 +51,12 @@ export function usePokerGame() {
       return;
     }
 
-    sckt.emit("connectToGame", { gameId: "1", playerName: "caio" });
-  }, []);
+    sckt.emit("connectToGame", {
+      gameId: "1",
+      playerName: "caio",
+      id: getUserId(),
+    });
+  }, [getUserId]);
 
   //#region emmitted events
 

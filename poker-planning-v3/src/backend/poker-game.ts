@@ -37,6 +37,7 @@ function addPlayer(
   player: {
     card: cardType;
     name: string;
+    id: string;
   },
 ) {
   const game = games.get(gameId);
@@ -47,7 +48,7 @@ function addPlayer(
 
   const newPlayer: playerType = {
     card: player.card,
-    id: "", //todo: gerar id aleatorio
+    id: player.id,
     isOpen: false,
     name: player.name,
   };
@@ -167,9 +168,11 @@ export function registerPokerGameSocket(
       ({
         gameId: _gameId,
         playerName,
+        id,
       }: {
         gameId: string;
         playerName: string;
+        id: string;
       }) => {
         let gameId = _gameId;
         let game = games.get(gameId);
@@ -187,6 +190,7 @@ export function registerPokerGameSocket(
           addPlayer(gameId, {
             card: "",
             name: playerName,
+            id,
           });
         }
 
