@@ -4,33 +4,10 @@ import type {
   playerType,
   setPlayerCardEventType,
 } from "@/shared/poker-types";
+import { nanoid } from "nanoid";
 import type { DefaultEventsMap, Server } from "socket.io";
 
-const game = {
-  players: [
-    {
-      name: "Caio",
-      card: "1",
-      id: "1",
-      isOpen: true,
-    },
-    {
-      name: "Testerson",
-      card: "5",
-      id: "2",
-      isOpen: true,
-    },
-    {
-      name: "Zé",
-      card: "13",
-      id: "3",
-      isOpen: true,
-    },
-  ],
-};
-
 const games = new Map<string, gameType>();
-games.set("1", game);
 
 function addPlayer(
   gameId: string,
@@ -117,10 +94,10 @@ function togglePlayerCardVisibility({
   });
 }
 
-function createGame() {
+function createGame(_gameId: string) {
   const [...gamesIds] = games.keys();
-  const gameId = `${gamesIds.length + 1}`;
-  games.set(gameId, { players: [] });
+  const gameId = !gamesIds.includes(_gameId) ? _gameId : nanoid();
+  games.set(gameId, { id: gameId, players: [] });
 
   return gameId;
 }
@@ -170,15 +147,18 @@ export function registerPokerGameSocket(
         playerName,
         id,
       }: {
-        gameId: string;
+        gameId?: string;
         playerName: string;
         id: string;
       }) => {
-        let gameId = _gameId;
+        let gameId =
+          typeof _gameId === "string" && games.has(_gameId)
+            ? _gameId
+            : nanoid();
         let game = games.get(gameId);
 
         if (!game) {
-          gameId = createGame();
+          gameId = createGame(gameId);
           game = games.get(gameId);
         }
 

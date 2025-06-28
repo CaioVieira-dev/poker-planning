@@ -26,37 +26,40 @@ export function usePokerGame() {
   const updatePlayerCard = useCallback(
     (card: string) => {
       const sckt = socketRef?.current;
-      if (!sckt) {
+      if (!sckt || !game?.id) {
         return;
       }
 
       const data: setPlayerCardEventType = {
         card,
-        gameId: "1",
+        gameId: game.id,
         playerId: getUserId(),
       };
 
       sckt.emit("setPlayerCard", data);
     },
-    [getUserId],
+    [getUserId, game],
   );
 
   const resetCard = useCallback(() => {
     updatePlayerCard(getUserId());
   }, [getUserId, updatePlayerCard]);
 
-  const connectToGame = useCallback(() => {
-    const sckt = socketRef?.current;
-    if (!sckt) {
-      return;
-    }
+  const connectToGame = useCallback(
+    ({ gameId, playerName }: { gameId?: string; playerName: string }) => {
+      const sckt = socketRef?.current;
+      if (!sckt) {
+        return;
+      }
 
-    sckt.emit("connectToGame", {
-      gameId: "1",
-      playerName: "caio",
-      id: getUserId(),
-    });
-  }, [getUserId]);
+      sckt.emit("connectToGame", {
+        gameId,
+        playerName,
+        id: getUserId(),
+      });
+    },
+    [getUserId],
+  );
 
   //#region emmitted events
 

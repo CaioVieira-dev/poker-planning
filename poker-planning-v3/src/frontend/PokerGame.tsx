@@ -2,11 +2,10 @@ import { Container } from "./components/ui/Container";
 import { Card } from "./components/ui/Card";
 import { PlayersTable } from "./PlayersTable";
 import { usePokerGame } from "./usePokerGame";
-import { Button } from "./components/ui/button";
+import { EnterPoker } from "./EnterPoker";
 
 export function PokerGame() {
-  const { game, possibleCards, resetCard, updatePlayerCard, connectToGame } =
-    usePokerGame();
+  const { game, possibleCards, resetCard, updatePlayerCard } = usePokerGame();
 
   return (
     <Container>
@@ -21,7 +20,7 @@ export function PokerGame() {
         <div className="">
           <PlayersTable game={game} resetCard={resetCard} />
         </div>
-        <Button onClick={connectToGame}>Entrar</Button>
+        <EnterPoker />
       </div>
     </Container>
   );
