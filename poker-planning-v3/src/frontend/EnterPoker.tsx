@@ -12,7 +12,7 @@ import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { Input } from "./components/ui/input";
 import { usePokerGame } from "./usePokerGame";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function EnterPoker() {
   const { connectToGame } = usePokerGame();
@@ -29,6 +29,13 @@ export function EnterPoker() {
   const reset = useCallback(() => {
     setName("");
     setRoom("");
+  }, []);
+
+  useEffect(() => {
+    const match = window.location.pathname.match(/^\/rooms\/([a-zA-Z0-9_-]+)/);
+    if (match) {
+      setRoom(match[1]);
+    }
   }, []);
 
   return (
@@ -51,6 +58,7 @@ export function EnterPoker() {
               id="name"
               name="name"
               onChange={(e) => setName(e.target.value)}
+              value={name}
               // defaultValue="Pedro Duarte" //TODO: adicionar sugestão de nome aleatorio
             />
           </div>
@@ -59,6 +67,7 @@ export function EnterPoker() {
             <Input
               id="room"
               name="room"
+              value={room}
               placeholder="Identificador da sala..."
               onChange={(e) => setRoom(e.target.value)}
             />

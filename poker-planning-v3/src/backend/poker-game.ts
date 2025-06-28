@@ -141,6 +141,11 @@ export function registerPokerGameSocket(
       },
     );
 
+    socket.on("spectateGame", (gameId: string) => {
+      socket.join(gameId);
+      socket.emit("getGame", games.get(gameId));
+    });
+
     socket.on(
       "connectToGame",
       ({
@@ -152,10 +157,7 @@ export function registerPokerGameSocket(
         playerName: string;
         id: string;
       }) => {
-        let gameId =
-          typeof _gameId === "string" && games.has(_gameId)
-            ? _gameId
-            : nanoid();
+        let gameId = typeof _gameId === "string" ? _gameId : nanoid();
         let game = games.get(gameId);
 
         if (!game) {
@@ -180,7 +182,6 @@ export function registerPokerGameSocket(
         const data = socket.data as socketData;
         data.room = gameId;
         data.playerId = id;
-        console.log("conect", games, data);
 
         io.to(gameId).emit("getGame", games.get(gameId));
       },
@@ -193,7 +194,6 @@ export function registerPokerGameSocket(
         removeGameIfGameRoomIsEmpty(room);
 
         io.to(room).emit("getGame", games.get(room));
-        console.log("disconect", games);
       }
     });
   });

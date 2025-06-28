@@ -50,7 +50,16 @@ export function usePokerGame() {
   }, [getPlayerId, updatePlayerCard]);
 
   const connectToGame = useCallback(
-    ({ gameId, playerName }: { gameId?: string; playerName: string }) => {
+    ({
+      gameId: _gameId,
+      playerName,
+    }: {
+      gameId?: string;
+      playerName: string;
+    }) => {
+      const gameId = _gameId ? _gameId : nanoid();
+      window.history.pushState({}, "", `/rooms/${gameId}`);
+
       socket.emit("connectToGame", {
         gameId,
         playerName,
@@ -86,6 +95,13 @@ export function usePokerGame() {
       //#endregion
     };
   }, []);
+  useEffect(() => {
+    const match = window.location.pathname.match(/^\/rooms\/([a-zA-Z0-9_-]+)/);
+
+    if (!game && match) {
+      socket.emit("spectateGame", match[1]);
+    }
+  }, [game]);
 
   return {
     game,
