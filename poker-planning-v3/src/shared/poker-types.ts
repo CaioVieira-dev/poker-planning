@@ -17,3 +17,8 @@ export type setPlayerCardEventType = {
   playerId: string;
   card: cardType;
 };
+
+export type socketData = {
+  room?: string;
+  playerId?: string;
+};

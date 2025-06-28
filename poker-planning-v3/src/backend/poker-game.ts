@@ -3,6 +3,7 @@ import type {
   gameType,
   playerType,
   setPlayerCardEventType,
+  socketData,
 } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
 import type { DefaultEventsMap, Server } from "socket.io";
@@ -40,7 +41,7 @@ function removePlayer(gameId: string, playerId: string) {
     return;
   }
 
-  game.players.filter((p) => p.id === playerId);
+  game.players = game.players.filter((p) => p.id !== playerId);
 }
 
 function getPlayerGame(gameId: string, playerId: string) {
@@ -101,10 +102,10 @@ function createGame(_gameId: string) {
 
   return gameId;
 }
-function removeGame(gameId: string) {
+function removeGameIfGameRoomIsEmpty(gameId: string) {
   const game = games.get(gameId);
 
-  if (!game) {
+  if (!game || game?.players?.length !== 0) {
     return;
   }
 
@@ -124,7 +125,7 @@ export function registerPokerGameSocket(
           playerId,
         });
 
-        io.emit("getGame", games.get(gameId));
+        io.to(gameId).emit("getGame", games.get(gameId));
       },
     );
 
@@ -136,7 +137,7 @@ export function registerPokerGameSocket(
           isOpen,
         });
 
-        io.emit("getGame", games.get(gameId));
+        io.to(gameId).emit("getGame", games.get(gameId));
       },
     );
 
@@ -166,7 +167,7 @@ export function registerPokerGameSocket(
           return;
         }
 
-        if (!game.players.some((p) => p.name === playerName)) {
+        if (!game.players.some((p) => p.id === id)) {
           addPlayer(gameId, {
             card: "",
             name: playerName,
@@ -174,8 +175,26 @@ export function registerPokerGameSocket(
           });
         }
 
-        io.emit("getGame", games.get(gameId));
+        socket.join(gameId);
+
+        const data = socket.data as socketData;
+        data.room = gameId;
+        data.playerId = id;
+        console.log("conect", games, data);
+
+        io.to(gameId).emit("getGame", games.get(gameId));
       },
     );
+
+    socket.on("disconnect", () => {
+      const { room, playerId } = socket.data as socketData;
+      if (room && playerId && games.has(room)) {
+        removePlayer(room, playerId);
+        removeGameIfGameRoomIsEmpty(room);
+
+        io.to(room).emit("getGame", games.get(room));
+        console.log("disconect", games);
+      }
+    });
   });
 }

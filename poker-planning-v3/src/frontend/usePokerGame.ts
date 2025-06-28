@@ -1,64 +1,63 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
-
-const socket = io();
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { socket } from "./socket";
 
 export function usePokerGame() {
-  const socketRef = useRef<Socket>(socket);
   const [game, setGame] = useState<gameType>();
+  const [playerId, setPlayerId] = useState<string>();
+
   const possibleCards = useMemo(
     () => ["co", "?", "1", "2", "3", "5", "8", "13", "21"],
     [],
   );
 
-  const getUserId = useCallback(() => {
+  const getPlayerId = useCallback(() => {
+    if (playerId) {
+      return playerId;
+    }
+
     const STORAGE_KEY = "poker-user-id";
     let userId = localStorage.getItem(STORAGE_KEY);
     if (!userId) {
       userId = nanoid();
       localStorage.setItem(STORAGE_KEY, userId);
     }
+
+    setPlayerId(userId);
     return userId;
-  }, []);
+  }, [playerId]);
 
   const updatePlayerCard = useCallback(
     (card: string) => {
-      const sckt = socketRef?.current;
-      if (!sckt || !game?.id) {
+      if (!game?.id) {
         return;
       }
 
       const data: setPlayerCardEventType = {
         card,
         gameId: game.id,
-        playerId: getUserId(),
+        playerId: getPlayerId(),
       };
 
-      sckt.emit("setPlayerCard", data);
+      socket.emit("setPlayerCard", data);
     },
-    [getUserId, game],
+    [getPlayerId, game],
   );
 
   const resetCard = useCallback(() => {
-    updatePlayerCard(getUserId());
-  }, [getUserId, updatePlayerCard]);
+    updatePlayerCard(getPlayerId());
+  }, [getPlayerId, updatePlayerCard]);
 
   const connectToGame = useCallback(
     ({ gameId, playerName }: { gameId?: string; playerName: string }) => {
-      const sckt = socketRef?.current;
-      if (!sckt) {
-        return;
-      }
-
-      sckt.emit("connectToGame", {
+      socket.emit("connectToGame", {
         gameId,
         playerName,
-        id: getUserId(),
+        id: getPlayerId(),
       });
     },
-    [getUserId],
+    [getPlayerId],
   );
 
   //#region emmitted events
@@ -68,24 +67,22 @@ export function usePokerGame() {
   useEffect(() => {
     //#region connection events
 
-    // Crie o socket *dentro* do useEffect!
-    socketRef.current = io();
-
-    socketRef.current.on("msgToClient", (msg) => {
+    socket.on("msgToClient", (msg) => {
       console.log("Recebido do servidor:", msg);
     });
     //#endregion
 
     //#region received events
-    socketRef.current.on("getGame", (data: gameType) => {
+    socket.on("getGame", (data: gameType) => {
       setGame(data);
+      console.log("no getGame", data);
     });
     //#endregion
 
     return () => {
       //#region disconnection events
-      // Cleanup só da instância criada por esse componente
-      socketRef.current?.disconnect();
+      socket.off("msgToClient");
+      socket.off("getGame");
       //#endregion
     };
   }, []);
