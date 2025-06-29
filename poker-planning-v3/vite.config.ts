@@ -17,6 +17,7 @@ export default defineConfig({
       "/socket.io": "http://localhost:3001",
       "/api": "http://localhost:3001",
     },
+    // allowedHosts: true, //descomente para testar usando o quick tunnel da cloudflare
   },
   resolve: {
     alias: {
