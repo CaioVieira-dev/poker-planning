@@ -30,7 +30,7 @@ export function usePokerGame() {
 
   const updatePlayerCard = useCallback(
     (card: string) => {
-      if (!game?.id) {
+      if (!game?.id || !playerId) {
         return;
       }
 
@@ -42,12 +42,14 @@ export function usePokerGame() {
 
       socket.emit("setPlayerCard", data);
     },
-    [getPlayerId, game],
+    [game?.id, playerId, getPlayerId],
   );
 
   const resetCard = useCallback(() => {
-    updatePlayerCard(getPlayerId());
-  }, [getPlayerId, updatePlayerCard]);
+    if (playerId) {
+      updatePlayerCard(getPlayerId());
+    }
+  }, [getPlayerId, updatePlayerCard, playerId]);
 
   const connectToGame = useCallback(
     ({
@@ -109,5 +111,6 @@ export function usePokerGame() {
     updatePlayerCard,
     possibleCards,
     connectToGame,
+    playerId,
   };
 }

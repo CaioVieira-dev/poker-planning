@@ -1,11 +1,12 @@
 import { Container } from "./components/ui/Container";
 import { Card } from "./components/ui/Card";
 import { PlayersTable } from "./PlayersTable";
-import { usePokerGame } from "./usePokerGame";
 import { EnterPoker } from "./EnterPoker";
+import { usePokerGameContext } from "./PokerGameContext";
 
 export function PokerGame() {
-  const { game, possibleCards, resetCard, updatePlayerCard } = usePokerGame();
+  const { game, possibleCards, resetCard, updatePlayerCard } =
+    usePokerGameContext();
 
   return (
     <Container>

@@ -1,9 +1,12 @@
 import { PokerGame } from "./PokerGame";
+import { PokerGameProvider } from "./PokerGameContext";
 
 function App() {
   return (
     <>
-      <PokerGame />
+      <PokerGameProvider>
+        <PokerGame />
+      </PokerGameProvider>
     </>
   );
 }

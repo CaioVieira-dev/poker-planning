@@ -11,11 +11,11 @@ import {
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { Input } from "./components/ui/input";
-import { usePokerGame } from "./usePokerGame";
 import { useCallback, useEffect, useState } from "react";
+import { usePokerGameContext } from "./PokerGameContext";
 
 export function EnterPoker() {
-  const { connectToGame } = usePokerGame();
+  const { connectToGame } = usePokerGameContext();
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
 
