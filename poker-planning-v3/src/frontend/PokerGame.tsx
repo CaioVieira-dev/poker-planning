@@ -7,8 +7,12 @@ import { useCallback, useMemo } from "react";
 import { Button } from "./components/ui/button";
 
 export function PokerGame() {
-  const { possibleCards, updatePlayerCard, toggleCardsVisibility } =
-    usePokerGameContext();
+  const {
+    possibleCards,
+    updatePlayerCard,
+    toggleCardsVisibility,
+    resetPlayersCard,
+  } = usePokerGameContext();
 
   const cardOnClick = useCallback(
     (cardValue: string) => () => {
@@ -36,8 +40,9 @@ export function PokerGame() {
         <div className="flex flex-wrap justify-evenly gap-2">
           {memoizedCard}
         </div>
-        <div className="">
+        <div className="flex gap-2">
           <Button onClick={toggleCardsVisibility}>Virar cartas</Button>
+          <Button onClick={resetPlayersCard}>Limpar cartas</Button>
         </div>
         <div className="">
           <PlayersTable />

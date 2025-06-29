@@ -78,6 +78,13 @@ export function usePokerGame() {
 
     socket.emit("togglePlayersCardVisibility", { gameId: game.id });
   }, [game?.id, playerId]);
+  const resetPlayersCard = useCallback(() => {
+    if (!game?.id || !playerId) {
+      return;
+    }
+
+    socket.emit("resetPlayersCard", { gameId: game.id });
+  }, [game?.id, playerId]);
 
   //#region emmitted events
 
@@ -121,5 +128,6 @@ export function usePokerGame() {
     connectToGame,
     playerId,
     toggleCardsVisibility,
+    resetPlayersCard,
   };
 }

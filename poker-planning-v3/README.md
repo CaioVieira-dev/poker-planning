@@ -53,7 +53,7 @@ export default tseslint.config({
 });
 ```
 
-ps: se o tailwind intellisense não estiver funcionando, adicione isso nas configs do vscode `"tailwindCSS.experimental.configFile": "poker-planning-v3/src/index.css"`
+ps: se o tailwind intellisense não estiver funcionando, adicione isso nas configs do vscode `"tailwindCSS.experimental.configFile": "poker-planning-v3/src/frontend/index.css"`
 
 Nesse projeto eu uso extensoes para ajudar na DX, você pode iniciar normalmente ou iniciar usando `ctrl + shift + p` e `Terminals: Run` (ou se ja estiver tudo certo com o projeto, só de abrir o vscode ele começa rodando o back e o front XD)
 

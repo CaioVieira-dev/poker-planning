@@ -68,7 +68,7 @@ export function Card({ value, open, onClick, disabled }: CardProps) {
         {/* Frente */}
         <div className="absolute flex h-full w-full [transform:rotateY(180deg)] items-center justify-center rounded-lg border border-blue-400 bg-slate-100 shadow-lg [backface-visibility:hidden]">
           <span className="text-2xl font-bold text-blue-800">
-            {displayedValue}
+            {displayedValue || "-"}
           </span>
         </div>
       </div>

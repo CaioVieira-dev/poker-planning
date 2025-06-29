@@ -90,6 +90,21 @@ function togglePlayersCardVisibility({ gameId }: { gameId: string }) {
     return p;
   });
 }
+function resetPlayersCard({ gameId }: { gameId: string }) {
+  const game = games.get(gameId);
+  if (!game) {
+    return;
+  }
+
+  const { players } = game;
+
+  game.players = players.map((p) => {
+    p.card = "";
+    p.isOpen = false;
+
+    return p;
+  });
+}
 
 function createGame(_gameId: string) {
   const [...gamesIds] = games.keys();
@@ -135,6 +150,13 @@ export function registerPokerGameSocket(
         io.to(gameId).emit("getGame", games.get(gameId));
       },
     );
+    socket.on("resetPlayersCard", ({ gameId }: { gameId: string }) => {
+      resetPlayersCard({
+        gameId,
+      });
+
+      io.to(gameId).emit("getGame", games.get(gameId));
+    });
 
     socket.on("spectateGame", (gameId: string) => {
       socket.join(gameId);

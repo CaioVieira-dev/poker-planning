@@ -30,14 +30,14 @@ export function PlayersTable() {
       <TableHeader>
         <TableRow>
           <TableHead>Jogador</TableHead>
-          <TableHead>Nota</TableHead>
+          <TableHead className="text-center">Nota</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {game?.players?.map?.((p) => (
           <TableRow key={p.id}>
             <TableCell className="font-medium">{p.name}</TableCell>
-            <TableCell>
+            <TableCell className="flex justify-center">
               <Card
                 onClick={() => resetCard()}
                 open={isCardOpen(p, playerId)}
