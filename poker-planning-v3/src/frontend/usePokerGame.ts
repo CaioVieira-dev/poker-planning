@@ -8,7 +8,7 @@ export function usePokerGame() {
   const [playerId, setPlayerId] = useState<string>();
 
   const possibleCards = useMemo(
-    () => ["co", "?", "1", "2", "3", "5", "8", "13", "21"],
+    () => ["☕", "?", "1", "2", "3", "5", "8", "13", "21"],
     [],
   );
 
@@ -47,9 +47,9 @@ export function usePokerGame() {
 
   const resetCard = useCallback(() => {
     if (playerId) {
-      updatePlayerCard(getPlayerId());
+      updatePlayerCard("");
     }
-  }, [getPlayerId, updatePlayerCard, playerId]);
+  }, [updatePlayerCard, playerId]);
 
   const connectToGame = useCallback(
     ({

@@ -7,16 +7,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/frontend/components/ui/table";
-import type { gameType } from "@/shared/poker-types";
 import { Card } from "./components/ui/Card";
+import { usePokerGameContext } from "./PokerGameContext";
+import type { playerType } from "@/shared/poker-types";
 
-export function PlayersTable({
-  game,
-  resetCard,
-}: {
-  game: gameType | undefined;
-  resetCard: (id: string) => void;
-}) {
+function isCardOpen(p: playerType, playerId: string | undefined) {
+  const cardIsNotEmpty = p.card !== "";
+  const isMyPlayer = p.id === playerId;
+  const cardIsOpen = p.isOpen;
+
+  return cardIsOpen || (isMyPlayer && cardIsNotEmpty);
+}
+
+export function PlayersTable() {
+  const { game, resetCard, playerId } = usePokerGameContext();
+
   return (
     <Table>
       <TableCaption>
@@ -29,11 +34,16 @@ export function PlayersTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {game?.players?.map?.((player) => (
-          <TableRow key={player.id}>
-            <TableCell className="font-medium">{player.name}</TableCell>
+        {game?.players?.map?.((p) => (
+          <TableRow key={p.id}>
+            <TableCell className="font-medium">{p.name}</TableCell>
             <TableCell>
-              <Card onClick={() => resetCard(player.id)}>{player.card}</Card>
+              <Card
+                onClick={() => resetCard()}
+                open={isCardOpen(p, playerId)}
+                value={p.card}
+                disabled={p.id !== playerId}
+              ></Card>
             </TableCell>
           </TableRow>
         ))}

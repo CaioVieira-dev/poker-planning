@@ -1,11 +1,8 @@
-import { Container } from "./components/ui/Container";
 import { Card } from "./components/ui/Card";
-import { PlayersTable } from "./PlayersTable";
-import { EnterPoker } from "./EnterPoker";
 import { usePokerGameContext } from "./PokerGameContext";
 import { useCallback, useMemo } from "react";
 
-export function PokerGame() {
+export function PossibleCards() {
   const { possibleCards, updatePlayerCard } = usePokerGameContext();
 
   const cardOnClick = useCallback(
@@ -28,17 +25,5 @@ export function PokerGame() {
     [cardOnClick, possibleCards],
   );
 
-  return (
-    <Container>
-      <div className="flex flex-col gap-4 px-4 pt-4">
-        <div className="flex flex-wrap justify-evenly gap-2">
-          {memoizedCard}
-        </div>
-        <div className="">
-          <PlayersTable />
-        </div>
-        <EnterPoker />
-      </div>
-    </Container>
-  );
+  return memoizedCard;
 }
