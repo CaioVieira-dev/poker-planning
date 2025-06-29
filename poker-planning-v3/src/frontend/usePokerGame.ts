@@ -71,6 +71,14 @@ export function usePokerGame() {
     [getPlayerId],
   );
 
+  const toggleCardsVisibility = useCallback(() => {
+    if (!game?.id || !playerId) {
+      return;
+    }
+
+    socket.emit("togglePlayersCardVisibility", { gameId: game.id });
+  }, [game?.id, playerId]);
+
   //#region emmitted events
 
   //#endregion
@@ -112,5 +120,6 @@ export function usePokerGame() {
     possibleCards,
     connectToGame,
     playerId,
+    toggleCardsVisibility,
   };
 }

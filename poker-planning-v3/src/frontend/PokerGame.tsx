@@ -4,9 +4,11 @@ import { PlayersTable } from "./PlayersTable";
 import { EnterPoker } from "./EnterPoker";
 import { usePokerGameContext } from "./PokerGameContext";
 import { useCallback, useMemo } from "react";
+import { Button } from "./components/ui/button";
 
 export function PokerGame() {
-  const { possibleCards, updatePlayerCard } = usePokerGameContext();
+  const { possibleCards, updatePlayerCard, toggleCardsVisibility } =
+    usePokerGameContext();
 
   const cardOnClick = useCallback(
     (cardValue: string) => () => {
@@ -33,6 +35,9 @@ export function PokerGame() {
       <div className="flex flex-col gap-4 px-4 pt-4">
         <div className="flex flex-wrap justify-evenly gap-2">
           {memoizedCard}
+        </div>
+        <div className="">
+          <Button onClick={toggleCardsVisibility}>Virar cartas</Button>
         </div>
         <div className="">
           <PlayersTable />

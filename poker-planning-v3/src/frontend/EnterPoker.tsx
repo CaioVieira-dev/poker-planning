@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { usePokerGameContext } from "./PokerGameContext";
 
 export function EnterPoker() {
-  const { connectToGame, playerId } = usePokerGameContext();
+  const { connectToGame, playerId, game } = usePokerGameContext();
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
 
@@ -93,7 +93,9 @@ export function EnterPoker() {
         </DialogContent>
       </Dialog>
       <div className="text-muted-foreground mt-4 text-sm">
-        Você está assistindo ao poker! Clique em "Entrar" e junte-se a sala
+        {(game?.players?.length ?? 0 > 0)
+          ? ' Você está assistindo ao poker! Clique em "Entrar" e junte-se a sala'
+          : ""}
       </div>
     </>
   );

@@ -76,13 +76,7 @@ function setPlayerCard({
 
   playerGame.card = card;
 }
-function togglePlayerCardVisibility({
-  gameId,
-  isOpen,
-}: {
-  gameId: string;
-  isOpen: boolean;
-}) {
+function togglePlayersCardVisibility({ gameId }: { gameId: string }) {
   const game = games.get(gameId);
   if (!game) {
     return;
@@ -90,8 +84,10 @@ function togglePlayerCardVisibility({
 
   const { players } = game;
 
-  players.forEach((p) => {
-    p.isOpen = isOpen;
+  game.players = players.map((p) => {
+    p.isOpen = !p.isOpen;
+
+    return p;
   });
 }
 
@@ -131,10 +127,9 @@ export function registerPokerGameSocket(
 
     socket.on(
       "togglePlayersCardVisibility",
-      ({ isOpen, gameId }: { gameId: string; isOpen: boolean }) => {
-        togglePlayerCardVisibility({
+      ({ gameId }: { gameId: string }) => {
+        togglePlayersCardVisibility({
           gameId,
-          isOpen,
         });
 
         io.to(gameId).emit("getGame", games.get(gameId));
