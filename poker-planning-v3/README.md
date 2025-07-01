@@ -1,61 +1,25 @@
-# React + TypeScript + Vite
+### Rodando pela primeira vez
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Depois de clonar o projeto, abra o projeto com o devcontainers(instale a extensão do vscode, se não tiver instalado). Depois disso, o processo é bem direto
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+```bash
+cd poker-planning-v3
+pnpm install
+#se o pnpm pedir permissão para rodar scripts, aceite com o "y"
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Depois de rodar o install, você pode rodar o back e o front em terminais separados, ou usar a extensão terminals para rodar o app.
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
-
-ps: se o tailwind intellisense não estiver funcionando, adicione isso nas configs do vscode `"tailwindCSS.experimental.configFile": "poker-planning-v3/src/frontend/index.css"`
+### Sobre extensões
 
 Nesse projeto eu uso extensoes para ajudar na DX, você pode iniciar normalmente ou iniciar usando `ctrl + shift + p` e `Terminals: Run` (ou se ja estiver tudo certo com o projeto, só de abrir o vscode ele começa rodando o back e o front XD)
+
+---
+
+### Resolvendo problemas
+
+- Tailwind intellisense não funciona
+  Se o tailwind intellisense não estiver funcionando, adicione isso nas configs do vscode `"tailwindCSS.experimental.configFile": "poker-planning-v3/src/frontend/index.css"`
 
 ---
 
