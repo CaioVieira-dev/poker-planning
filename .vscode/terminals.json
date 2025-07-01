@@ -1,0 +1,20 @@
+{
+  "autorun": true,
+  "terminals": [
+    {
+      "name": "Backend",
+      "description": "Servidor Express/Socket.io",
+      "cwd": "poker-planning-v3",
+      "command": "pnpm dev:backend",
+      "focus": true,
+      "icon": "rocket"
+    },
+    {
+      "name": "Frontend",
+      "description": "Cliente Vite/React",
+      "cwd": "poker-planning-v3",
+      "command": "pnpm dev:frontend",
+      "icon": "globe"
+    }
+  ]
+}
