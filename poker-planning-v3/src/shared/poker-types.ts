@@ -9,6 +9,7 @@ export type playerType = {
 
 export type gameType = {
   players: playerType[];
+  possibleCards: string[];
   id: string;
 };
 
