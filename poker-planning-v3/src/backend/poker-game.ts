@@ -1,3 +1,4 @@
+import { defaultPokerCards } from "@/shared/poker-constants";
 import type {
   cardType,
   gameType,
@@ -109,9 +110,26 @@ function resetPlayersCard({ gameId }: { gameId: string }) {
 function createGame(_gameId: string) {
   const [...gamesIds] = games.keys();
   const gameId = !gamesIds.includes(_gameId) ? _gameId : nanoid();
-  games.set(gameId, { id: gameId, players: [] });
+  games.set(gameId, {
+    id: gameId,
+    players: [],
+    possibleCards: defaultPokerCards,
+  });
 
   return gameId;
+}
+function setGamePossibleCards(gameId: string, newPossibleCards: string[]) {
+  const game = games.get(gameId);
+
+  if (!game) {
+    return;
+  }
+
+  game.possibleCards = newPossibleCards;
+
+  resetPlayersCard({
+    gameId,
+  });
 }
 function removeGameIfGameRoomIsEmpty(gameId: string) {
   const game = games.get(gameId);
@@ -157,6 +175,20 @@ export function registerPokerGameSocket(
 
       io.to(gameId).emit("getGame", games.get(gameId));
     });
+    socket.on(
+      "setGamePossibleCards",
+      ({
+        gameId,
+        newPossibleCards,
+      }: {
+        gameId: string;
+        newPossibleCards: string[];
+      }) => {
+        setGamePossibleCards(gameId, newPossibleCards);
+
+        io.to(gameId).emit("getGame", games.get(gameId));
+      },
+    );
 
     socket.on("spectateGame", (gameId: string) => {
       socket.join(gameId);

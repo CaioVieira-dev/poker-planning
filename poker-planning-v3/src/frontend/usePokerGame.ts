@@ -1,16 +1,13 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { socket } from "./socket";
+import { defaultPokerCards } from "@/shared/poker-constants";
 
 export function usePokerGame() {
   const [game, setGame] = useState<gameType>();
   const [playerId, setPlayerId] = useState<string>();
-
-  const possibleCards = useMemo(
-    () => ["☕", "?", "1", "2", "3", "5", "8", "13", "21"],
-    [],
-  );
+  const [cards, setCards] = useState<string[]>(defaultPokerCards);
 
   const getPlayerId = useCallback(() => {
     if (playerId) {
@@ -50,6 +47,20 @@ export function usePokerGame() {
       updatePlayerCard("");
     }
   }, [updatePlayerCard, playerId]);
+
+  const changePlayerCards = useCallback(
+    (newPossibleCards: string[]) => {
+      if (!playerId || !newPossibleCards || newPossibleCards?.length === 0) {
+        return;
+      }
+
+      socket.emit("setGamePossibleCards", {
+        gameId: game?.id,
+        newPossibleCards,
+      });
+    },
+    [game?.id, playerId],
+  );
 
   const connectToGame = useCallback(
     ({
@@ -101,7 +112,13 @@ export function usePokerGame() {
     //#region received events
     socket.on("getGame", (data: gameType) => {
       setGame(data);
-      console.log("no getGame", data);
+      setCards((prev) => {
+        if (prev.some((p) => !data.possibleCards.includes(p))) {
+          return data.possibleCards ?? [];
+        }
+
+        return prev ?? [];
+      });
     });
     //#endregion
 
@@ -124,10 +141,11 @@ export function usePokerGame() {
     game,
     resetCard,
     updatePlayerCard,
-    possibleCards,
+    possibleCards: cards,
     connectToGame,
     playerId,
     toggleCardsVisibility,
     resetPlayersCard,
+    changePlayerCards,
   };
 }
