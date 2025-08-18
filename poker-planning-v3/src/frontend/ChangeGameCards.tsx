@@ -17,8 +17,8 @@ import { PlusIcon } from "lucide-react";
 import { Card } from "./components/ui/Card";
 
 export function ChangeGameCards() {
-  const { changePlayerCards, playerId } = usePokerGameContext();
-  const [newPlayerCards, setNewPlayerCards] = useState<string[]>([]);
+  const { changePlayerCards, playerId, possibleCards } = usePokerGameContext();
+  const [newPlayerCards, setNewPlayerCards] = useState<string[]>(possibleCards);
   const [newPlayerCard, setNewPlayerCard] = useState<string>("");
 
   const changeRoomCards = useCallback(() => {
