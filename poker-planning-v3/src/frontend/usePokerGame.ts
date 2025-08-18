@@ -106,7 +106,7 @@ export function usePokerGame() {
     socket.on("getGame", (data: gameType) => {
       setGame(data);
       setCards((prev) => {
-        if (prev.some((p) => !data.possibleCards.includes(p))) {
+        if (data?.possibleCards?.some?.((p) => !prev?.includes?.(p))) {
           return data.possibleCards ?? [];
         }
 
