@@ -102,13 +102,6 @@ export function usePokerGame() {
   //#endregion
 
   useEffect(() => {
-    //#region connection events
-
-    socket.on("msgToClient", (msg) => {
-      console.log("Recebido do servidor:", msg);
-    });
-    //#endregion
-
     //#region received events
     socket.on("getGame", (data: gameType) => {
       setGame(data);
@@ -124,7 +117,6 @@ export function usePokerGame() {
 
     return () => {
       //#region disconnection events
-      socket.off("msgToClient");
       socket.off("getGame");
       //#endregion
     };
