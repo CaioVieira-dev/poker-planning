@@ -12,16 +12,18 @@ export function Card({ value, open, onClick, disabled }: CardProps) {
   const [flipped, setFlipped] = useState(open);
   // Valor atualmente exibido na carta (para flip animado só quando troca o valor)
   const [displayedValue, setDisplayedValue] = useState(value);
-
   const prevOpen = useRef(open);
   const prevValue = useRef(value);
+
+  // Verifica se a carta tem valor (votou) mas está fechada
+  const hasValueButClosed =
+    !open && value !== null && value !== undefined && value !== "";
 
   // Mantém o estado visual de frente/verso sincronizado com prop open
   useEffect(() => {
     if (open !== prevOpen.current) {
       setFlipped(open);
       prevOpen.current = open;
-
       // Caso "revele" a carta, garante que o valor é o último recebido
       if (open && value !== displayedValue) {
         setDisplayedValue(value);
@@ -36,16 +38,13 @@ export function Card({ value, open, onClick, disabled }: CardProps) {
     if (open && value !== prevValue.current) {
       // (1) Vira pra baixo
       setFlipped(false);
-
       const timeout = setTimeout(() => {
         // (2) Após a animação, troca o valor
         setDisplayedValue(value);
         prevValue.current = value;
-
         // (3) E vira pra cima denovo, mostrando novo valor
         setFlipped(true);
       }, 250); // Duração deve bater com sua animação de flip (ms)
-
       return () => clearTimeout(timeout);
     } else if (!open && value !== prevValue.current) {
       setDisplayedValue(value);
@@ -62,8 +61,18 @@ export function Card({ value, open, onClick, disabled }: CardProps) {
         className={`relative h-full w-full transition-transform duration-300 ${flipped ? "[transform:rotateY(180deg)]" : ""} [transform-style:preserve-3d]`}
       >
         {/* Verso */}
-        <div className="absolute flex h-full w-full items-center justify-center rounded-lg border border-slate-400 bg-slate-200 shadow [backface-visibility:hidden]">
-          <span className="text-2xl text-slate-400">?</span>
+        <div
+          className={`absolute flex h-full w-full items-center justify-center rounded-lg shadow [backface-visibility:hidden] ${
+            hasValueButClosed
+              ? "border-2 border-green-500 bg-green-50" // Carta com valor fechada
+              : "border border-slate-400 bg-slate-200" // Carta vazia
+          }`}
+        >
+          <span
+            className={`text-2xl ${hasValueButClosed ? "text-green-600" : "text-slate-400"}`}
+          >
+            {hasValueButClosed ? "✓" : "?"}
+          </span>
         </div>
         {/* Frente */}
         <div className="absolute flex h-full w-full [transform:rotateY(180deg)] items-center justify-center rounded-lg border border-blue-400 bg-slate-100 shadow-lg [backface-visibility:hidden]">

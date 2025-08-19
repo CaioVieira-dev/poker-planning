@@ -26,12 +26,6 @@ app.get("/api/ping", (req, res) => {
 io.on("connection", (socket) => {
   console.log("Novo usuário conectado:", socket.id);
 
-  // Mensagem de exemplo do frontend
-  socket.on("msgToServer", (dados) => {
-    // Broadcast de volta para todos os clientes
-    io.emit("msgToClient", dados);
-  });
-
   socket.on("disconnect", () => {
     console.log("Usuário desconectado:", socket.id);
   });
