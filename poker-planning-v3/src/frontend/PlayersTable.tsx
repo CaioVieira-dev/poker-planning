@@ -100,8 +100,8 @@ function CircleLayout() {
   const players = game?.players || [];
 
   // Separa o jogador atual dos outros
-  const currentPlayer = players.find((p) => p.id === "1");
-  const otherPlayers = players.filter((p) => p.id !== "1");
+  const currentPlayer = players.find((p) => p.id === playerId);
+  const otherPlayers = players.filter((p) => p.id !== playerId);
 
   // Calcula altura dinâmica baseada no número de jogadores
   const getContainerSize = (playerCount: number) => {
