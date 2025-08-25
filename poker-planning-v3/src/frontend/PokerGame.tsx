@@ -6,6 +6,7 @@ import { usePokerGameContext } from "./PokerGameContext";
 import { useCallback, useMemo } from "react";
 import { Button } from "./components/ui/button";
 import { ChangeGameCards } from "./ChangeGameCards";
+import { VoteResults } from "./VoteResults";
 
 export function PokerGame() {
   const {
@@ -47,6 +48,9 @@ export function PokerGame() {
           <Button onClick={toggleCardsVisibility}>Virar cartas</Button>
           <Button onClick={resetPlayersCard}>Limpar cartas</Button>
           {memoizedChangeCards}
+        </div>
+        <div className="">
+          <VoteResults />
         </div>
         <div className="">
           <PlayersTable />
