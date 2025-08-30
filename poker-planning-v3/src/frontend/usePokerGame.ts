@@ -1,8 +1,9 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { socket } from "./socket";
 import { defaultPokerCards } from "@/shared/poker-constants";
+import { useReconnection } from "./useReconnection";
 
 export function usePokerGame() {
   const [game, setGame] = useState<gameType>();
@@ -24,6 +25,21 @@ export function usePokerGame() {
     setPlayerId(userId);
     return userId;
   }, [playerId]);
+
+  const {
+    isReconnecting,
+    reconnectionAttempts,
+    saveGameData,
+    getStoredGameData,
+    clearStoredGameData,
+    attemptReconnection,
+    resetReconnectionAttempts,
+  } = useReconnection(playerId);
+
+  const isPlayerOnGame = useMemo(() => {
+    const playerId = getPlayerId();
+    return (game?.players?.findIndex((p) => p.id === playerId) ?? -1) > -1;
+  }, [game?.players, getPlayerId]);
 
   const updatePlayerCard = useCallback(
     (card: string) => {
@@ -71,6 +87,7 @@ export function usePokerGame() {
       playerName: string;
     }) => {
       const gameId = _gameId ? _gameId : nanoid();
+      saveGameData(gameId, playerName);
       window.history.pushState({}, "", `/rooms/${gameId}`);
 
       socket.emit("connectToGame", {
@@ -79,7 +96,7 @@ export function usePokerGame() {
         id: getPlayerId(),
       });
     },
-    [getPlayerId],
+    [getPlayerId, saveGameData],
   );
 
   const toggleCardsVisibility = useCallback(() => {
@@ -96,6 +113,22 @@ export function usePokerGame() {
 
     socket.emit("resetPlayersCard", { gameId: game.id });
   }, [game?.id, playerId]);
+  const manualReconnect = useCallback(() => {
+    const storedGameData = getStoredGameData();
+    if (!storedGameData) return;
+
+    resetReconnectionAttempts();
+    attemptReconnection();
+  }, [attemptReconnection, getStoredGameData, resetReconnectionAttempts]);
+  const isCurrentPlayerDisconnected = useCallback(() => {
+    if (!game || !playerId) return false;
+    const currentPlayer = game.players.find((p) => p.id === playerId);
+    return currentPlayer?.isDisconnected === true;
+  }, [game, playerId]);
+  const leaveGame = useCallback(() => {
+    clearStoredGameData();
+    setGame(undefined);
+  }, [clearStoredGameData]);
 
   //#region emmitted events
 
@@ -105,22 +138,63 @@ export function usePokerGame() {
     //#region received events
     socket.on("getGame", (data: gameType) => {
       setGame(data);
+
+      // Reset da reconexão bem-sucedida
+      if (isReconnecting && data) {
+        const currentPlayer = data.players.find((p) => p.id === playerId);
+        if (currentPlayer && !currentPlayer.isDisconnected) {
+          resetReconnectionAttempts();
+          console.log("Reconexão bem-sucedida!");
+        }
+      }
+
       setCards((prev) => {
-        if (data?.possibleCards?.some?.((p) => !prev?.includes?.(p))) {
+        if (data?.possibleCards?.some?.((p) => !prev?.includes(p))) {
           return data.possibleCards ?? [];
         }
-
         return prev ?? [];
       });
+    });
+    socket.on("disconnect", () => {
+      console.log("Socket desconectado, tentando reconectar...");
+      setTimeout(attemptReconnection, 1000);
+    });
+    socket.on("connect", () => {
+      console.log("Socket reconectado!");
+
+      if (isReconnecting) {
+        const storedGameData = getStoredGameData();
+        if (storedGameData) {
+          socket.emit("connectToGame", {
+            gameId: storedGameData.gameId,
+            playerName: storedGameData.playerName,
+            id: getPlayerId(),
+          });
+        }
+      }
     });
     //#endregion
 
     return () => {
-      //#region disconnection events
       socket.off("getGame");
-      //#endregion
+      socket.off("disconnect");
+      socket.off("connect");
     };
-  }, []);
+  }, [
+    attemptReconnection,
+    getPlayerId,
+    getStoredGameData,
+    isReconnecting,
+    playerId,
+    resetReconnectionAttempts,
+  ]);
+  // Auto-reconexão quando detecta desconexão
+  useEffect(() => {
+    if (isCurrentPlayerDisconnected() && !isReconnecting) {
+      console.log("Jogador desconectado detectado, tentando reconectar...");
+      attemptReconnection();
+    }
+  }, [isCurrentPlayerDisconnected, isReconnecting, attemptReconnection]);
   useEffect(() => {
     const match = window.location.pathname.match(/^\/rooms\/([a-zA-Z0-9_-]+)/);
 
@@ -139,5 +213,11 @@ export function usePokerGame() {
     toggleCardsVisibility,
     resetPlayersCard,
     changePlayerCards,
+    isReconnecting,
+    isDisconnected: isCurrentPlayerDisconnected(),
+    reconnectionAttempts,
+    manualReconnect,
+    leaveGame,
+    isPlayerOnGame,
   };
 }
