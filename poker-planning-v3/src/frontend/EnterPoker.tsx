@@ -15,7 +15,8 @@ import { useCallback, useEffect, useState } from "react";
 import { usePokerGameContext } from "./PokerGameContext";
 
 export function EnterPoker() {
-  const { connectToGame, playerId, game } = usePokerGameContext();
+  const { connectToGame, playerId, game, manualReconnect, isPlayerOnGame } =
+    usePokerGameContext();
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
 
@@ -38,8 +39,12 @@ export function EnterPoker() {
     }
   }, []);
 
-  if (playerId) {
+  if (playerId && isPlayerOnGame) {
     return <></>;
+  }
+
+  if (isPlayerOnGame) {
+    <Button onClick={manualReconnect}>Reconectar</Button>;
   }
 
   return (

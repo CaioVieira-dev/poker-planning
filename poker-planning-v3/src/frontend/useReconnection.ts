@@ -4,7 +4,6 @@ import { socket } from "./socket";
 import { nanoid } from "nanoid";
 
 const STORAGE_KEYS = {
-  PLAYER_ID: "poker-user-id",
   GAME_DATA: "poker-game-data",
   RECONNECTION_ATTEMPTS: "poker-reconnection-attempts",
 } as const;

@@ -1,6 +1,6 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { socket } from "./socket";
 import { defaultPokerCards } from "@/shared/poker-constants";
 import { useReconnection } from "./useReconnection";
@@ -35,6 +35,11 @@ export function usePokerGame() {
     attemptReconnection,
     resetReconnectionAttempts,
   } = useReconnection(playerId);
+
+  const isPlayerOnGame = useMemo(() => {
+    const playerId = getPlayerId();
+    return (game?.players?.findIndex((p) => p.id === playerId) ?? -1) > -1;
+  }, [game?.players, getPlayerId]);
 
   const updatePlayerCard = useCallback(
     (card: string) => {
@@ -213,5 +218,6 @@ export function usePokerGame() {
     reconnectionAttempts,
     manualReconnect,
     leaveGame,
+    isPlayerOnGame,
   };
 }
