@@ -152,7 +152,7 @@ function markPlayerAsDisconnected(gameId: string, playerId: string) {
 
   const player = game.players.find((p) => p.id === playerId);
   if (player) {
-    player.isDisconnected = true; // Adicione esta propriedade ao tipo playerType
+    player.isDisconnected = true;
   }
 }
 
@@ -251,7 +251,6 @@ export function registerPokerGameSocket(
           clearTimeout(disconnectionTimeouts.get(timeoutKey)!);
           disconnectionTimeouts.delete(timeoutKey);
 
-          // Marca o jogador como conectado novamente
           markPlayerAsConnected(gameId, id);
           console.log(`Jogador ${playerName} reconectou-se à sala ${gameId}`);
         } else {
@@ -278,7 +277,6 @@ export function registerPokerGameSocket(
       const { room, playerId } = socket.data as socketData;
       if (room && playerId && games.has(room)) {
         const timeoutKey = `${room}:${playerId}`;
-        // Marca o jogador como desconectado imediatamente
         markPlayerAsDisconnected(room, playerId);
 
         const player = getPlayerGame(room, playerId);
@@ -295,7 +293,6 @@ export function registerPokerGameSocket(
           removeGameIfGameRoomIsEmpty(room);
           disconnectionTimeouts.delete(timeoutKey);
 
-          // Emite o estado atualizado do jogo
           io.to(room).emit("getGame", games.get(room));
         }, DISCONNECTION_DELAY);
 

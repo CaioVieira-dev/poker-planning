@@ -1,4 +1,3 @@
-// components/PlayerStatusIndicator.tsx
 import { Badge } from "@/frontend/components/ui/badge";
 import { WifiOff } from "lucide-react";
 import type { playerType } from "@/shared/poker-types";

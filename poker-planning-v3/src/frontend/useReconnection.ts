@@ -1,4 +1,3 @@
-// useReconnection.ts
 import { useCallback, useState, useRef } from "react";
 import { socket } from "./socket";
 import { nanoid } from "nanoid";

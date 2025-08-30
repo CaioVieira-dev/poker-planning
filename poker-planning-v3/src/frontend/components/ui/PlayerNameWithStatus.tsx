@@ -1,4 +1,3 @@
-// components/PlayerNameWithStatus.tsx
 import { PlayerStatusIndicator } from "./PlayerStatusIndicator";
 import type { playerType } from "@/shared/poker-types";
 
