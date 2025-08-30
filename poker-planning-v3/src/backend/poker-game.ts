@@ -10,6 +10,8 @@ import { nanoid } from "nanoid";
 import type { DefaultEventsMap, Server } from "socket.io";
 
 const games = new Map<string, gameType>();
+const disconnectionTimeouts = new Map<string, NodeJS.Timeout>();
+const DISCONNECTION_DELAY = 30000; // 30 segundos
 
 function addPlayer(
   gameId: string,
@@ -141,6 +143,32 @@ function removeGameIfGameRoomIsEmpty(gameId: string) {
   games.delete(gameId);
 }
 
+function markPlayerAsDisconnected(gameId: string, playerId: string) {
+  const game = games.get(gameId);
+
+  if (!game) {
+    return;
+  }
+
+  const player = game.players.find((p) => p.id === playerId);
+  if (player) {
+    player.isDisconnected = true; // Adicione esta propriedade ao tipo playerType
+  }
+}
+
+function markPlayerAsConnected(gameId: string, playerId: string) {
+  const game = games.get(gameId);
+
+  if (!game) {
+    return;
+  }
+
+  const player = game.players.find((p) => p.id === playerId);
+  if (player) {
+    player.isDisconnected = false;
+  }
+}
+
 export function registerPokerGameSocket(
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>,
 ) {
@@ -218,12 +246,22 @@ export function registerPokerGameSocket(
           return;
         }
 
-        if (!game.players.some((p) => p.id === id)) {
-          addPlayer(gameId, {
-            card: "",
-            name: playerName,
-            id,
-          });
+        const timeoutKey = `${gameId}:${id}`;
+        if (disconnectionTimeouts.has(timeoutKey)) {
+          clearTimeout(disconnectionTimeouts.get(timeoutKey)!);
+          disconnectionTimeouts.delete(timeoutKey);
+
+          // Marca o jogador como conectado novamente
+          markPlayerAsConnected(gameId, id);
+          console.log(`Jogador ${playerName} reconectou-se à sala ${gameId}`);
+        } else {
+          if (!game.players.some((p) => p.id === id)) {
+            addPlayer(gameId, {
+              card: "",
+              name: playerName,
+              id,
+            });
+          }
         }
 
         socket.join(gameId);
@@ -239,8 +277,30 @@ export function registerPokerGameSocket(
     socket.on("disconnect", () => {
       const { room, playerId } = socket.data as socketData;
       if (room && playerId && games.has(room)) {
-        removePlayer(room, playerId);
-        removeGameIfGameRoomIsEmpty(room);
+        const timeoutKey = `${room}:${playerId}`;
+        // Marca o jogador como desconectado imediatamente
+        markPlayerAsDisconnected(room, playerId);
+
+        const player = getPlayerGame(room, playerId);
+        console.log(
+          `Jogador ${player?.name ?? "sem nome na sala"} ${playerId} desconectou. Aguardando ${DISCONNECTION_DELAY / 1000}s para remoção...`,
+        );
+
+        const timeout = setTimeout(() => {
+          console.log(
+            `Removendo jogador ${player?.name ?? "sem nome na sala"} ${playerId} da sala ${room} após timeout`,
+          );
+
+          removePlayer(room, playerId);
+          removeGameIfGameRoomIsEmpty(room);
+          disconnectionTimeouts.delete(timeoutKey);
+
+          // Emite o estado atualizado do jogo
+          io.to(room).emit("getGame", games.get(room));
+        }, DISCONNECTION_DELAY);
+
+        // Salva o timeout para poder cancelá-lo se o jogador reconectar
+        disconnectionTimeouts.set(timeoutKey, timeout);
 
         io.to(room).emit("getGame", games.get(room));
       }

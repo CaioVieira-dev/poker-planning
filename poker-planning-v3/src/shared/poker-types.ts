@@ -5,6 +5,7 @@ export type playerType = {
   card: cardType;
   name: string;
   isOpen: boolean;
+  isDisconnected?: boolean;
 };
 
 export type gameType = {
