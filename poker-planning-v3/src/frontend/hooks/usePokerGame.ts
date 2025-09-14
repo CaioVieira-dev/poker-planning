@@ -1,7 +1,7 @@
 import type { gameType, setPlayerCardEventType } from "@/shared/poker-types";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { socket } from "../socket";
+import { socket } from "../lib/socket";
 import { defaultPokerCards } from "@/shared/poker-constants";
 import { useReconnection } from "./useReconnection";
 

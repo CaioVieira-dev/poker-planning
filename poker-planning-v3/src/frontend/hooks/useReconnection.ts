@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef } from "react";
-import { socket } from "../socket";
+import { socket } from "../lib/socket";
 import { nanoid } from "nanoid";
 
 const STORAGE_KEYS = {
