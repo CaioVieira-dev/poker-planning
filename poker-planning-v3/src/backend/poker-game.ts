@@ -11,7 +11,10 @@ import type { DefaultEventsMap, Server } from "socket.io";
 
 const games = new Map<string, gameType>();
 const disconnectionTimeouts = new Map<string, NodeJS.Timeout>();
-const DISCONNECTION_DELAY = 30000; // 30 segundos
+/*o tempo tipico para um usuario saber que ficou offline é de 45 segundos
+ * 25 segundos do "ping" do socket.io + 20 segundos do "pong"
+ */
+const DISCONNECTION_DELAY = 300000; // 300 segundos ou 5 minutos
 
 function addPlayer(
   gameId: string,
