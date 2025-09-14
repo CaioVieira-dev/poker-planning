@@ -10,7 +10,7 @@ import {
 import { Card } from "./components/ui/Card";
 import { usePokerGameContext } from "./PokerGameContext";
 import type { playerType } from "@/shared/poker-types";
-import { useUrlParam } from "./useUrlParam";
+import { useUrlParam } from "./hooks/useUrlParam";
 import { PlayerNameWithStatus } from "./components/ui/PlayerNameWithStatus";
 import { ConnectionStatusBanner } from "./ConnectionStatusBanner";
 

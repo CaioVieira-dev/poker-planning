@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "./components/ui/table";
-import { useUrlParam } from "./useUrlParam";
+import { useUrlParam } from "./hooks/useUrlParam";
 import { BarChart3 } from "lucide-react";
 
 export function VoteResults() {
