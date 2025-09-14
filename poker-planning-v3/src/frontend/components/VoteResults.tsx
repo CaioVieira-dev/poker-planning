@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Card } from "./components/ui/Card";
+import { Card } from "./ui/Card";
 import { usePokerGameContext } from "./PokerGameContext";
 import { useMemo } from "react";
 import {
@@ -9,8 +9,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./components/ui/table";
-import { useUrlParam } from "./hooks/useUrlParam";
+} from "./ui/table";
+import { useUrlParam } from "../hooks/useUrlParam";
 import { BarChart3 } from "lucide-react";
 
 export function VoteResults() {

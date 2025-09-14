@@ -7,11 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/frontend/components/ui/table";
-import { Card } from "./components/ui/Card";
+import { Card } from "./ui/Card";
 import { usePokerGameContext } from "./PokerGameContext";
 import type { playerType } from "@/shared/poker-types";
-import { useUrlParam } from "./hooks/useUrlParam";
-import { PlayerNameWithStatus } from "./components/ui/PlayerNameWithStatus";
+import { useUrlParam } from "../hooks/useUrlParam";
+import { PlayerNameWithStatus } from "./ui/PlayerNameWithStatus";
 import { ConnectionStatusBanner } from "./ConnectionStatusBanner";
 
 function isCardOpen(p: playerType, playerId: string | undefined) {

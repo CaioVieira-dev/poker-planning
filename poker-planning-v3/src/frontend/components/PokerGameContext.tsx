@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { usePokerGame } from "./hooks/usePokerGame";
+import { usePokerGame } from "../hooks/usePokerGame";
 
 type PokerGameContextType = ReturnType<typeof usePokerGame>;
 
