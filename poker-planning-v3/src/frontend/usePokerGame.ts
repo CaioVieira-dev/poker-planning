@@ -130,6 +130,30 @@ export function usePokerGame() {
     setGame(undefined);
   }, [clearStoredGameData]);
 
+  const onPlayerClientDisconnect = useCallback(() => {
+    if (!game || !playerId) {
+      return;
+    }
+
+    const newPlayers = game.players.map((p) => {
+      if (p.id !== playerId) {
+        return p;
+      }
+
+      return {
+        ...p,
+        isDisconnected: true,
+      };
+    });
+
+    const newGame = {
+      ...game,
+      players: newPlayers,
+    };
+
+    setGame(newGame);
+  }, [game, playerId]);
+
   //#region emmitted events
 
   //#endregion
@@ -155,9 +179,10 @@ export function usePokerGame() {
         return prev ?? [];
       });
     });
-    socket.on("disconnect", () => {
-      console.log("Socket desconectado, tentando reconectar...");
+    socket.on("disconnect", (r) => {
+      console.log("Socket desconectado, tentando reconectar...", r);
       setTimeout(attemptReconnection, 1000);
+      onPlayerClientDisconnect();
     });
     socket.on("connect", () => {
       console.log("Socket reconectado!");
@@ -185,6 +210,7 @@ export function usePokerGame() {
     getPlayerId,
     getStoredGameData,
     isReconnecting,
+    onPlayerClientDisconnect,
     playerId,
     resetReconnectionAttempts,
   ]);
