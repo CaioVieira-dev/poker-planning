@@ -8,13 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/frontend/components/ui/dialog";
-import { Button } from "./components/ui/button";
-import { Label } from "./components/ui/label";
-import { Input } from "./components/ui/input";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 import { useCallback, useState } from "react";
 import { usePokerGameContext } from "./PokerGameContext";
 import { PlusIcon } from "lucide-react";
-import { Card } from "./components/ui/Card";
+import { Card } from "./ui/Card";
 
 export function ChangeGameCards() {
   const { changePlayerCards, playerId, possibleCards } = usePokerGameContext();

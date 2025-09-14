@@ -1,10 +1,10 @@
-import { Container } from "./components/ui/Container";
-import { Card } from "./components/ui/Card";
+import { Container } from "./ui/Container";
+import { Card } from "./ui/Card";
 import { PlayersTable } from "./PlayersTable";
 import { EnterPoker } from "./EnterPoker";
 import { usePokerGameContext } from "./PokerGameContext";
 import { useCallback, useMemo } from "react";
-import { Button } from "./components/ui/button";
+import { Button } from "./ui/button";
 import { ChangeGameCards } from "./ChangeGameCards";
 import { VoteResults } from "./VoteResults";
 
