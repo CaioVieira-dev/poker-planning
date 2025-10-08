@@ -4,27 +4,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { socket } from "../lib/socket";
 import { defaultPokerCards } from "@/shared/poker-constants";
 import { useReconnection } from "./useReconnection";
+import { useUserId } from "./useUserId";
 
 export function usePokerGame() {
   const [game, setGame] = useState<gameType>();
-  const [playerId, setPlayerId] = useState<string>();
+  const playerId = useUserId();
   const [cards, setCards] = useState<string[]>(defaultPokerCards);
-
-  const getPlayerId = useCallback(() => {
-    if (playerId) {
-      return playerId;
-    }
-
-    const STORAGE_KEY = "poker-user-id";
-    let userId = localStorage.getItem(STORAGE_KEY);
-    if (!userId) {
-      userId = nanoid();
-      localStorage.setItem(STORAGE_KEY, userId);
-    }
-
-    setPlayerId(userId);
-    return userId;
-  }, [playerId]);
 
   const {
     isReconnecting,
@@ -34,7 +19,8 @@ export function usePokerGame() {
     clearStoredGameData,
     attemptReconnection,
     resetReconnectionAttempts,
-  } = useReconnection(playerId);
+    manualReconnect,
+  } = useReconnection();
 
   //#region emmitted events
   const updatePlayerCard = useCallback(
@@ -46,12 +32,12 @@ export function usePokerGame() {
       const data: setPlayerCardEventType = {
         card,
         gameId: game.id,
-        playerId: getPlayerId(),
+        playerId,
       };
 
       socket.emit("setPlayerCard", data);
     },
-    [game?.id, playerId, getPlayerId],
+    [game?.id, playerId],
   );
 
   const changePlayerCards = useCallback(
@@ -83,10 +69,10 @@ export function usePokerGame() {
       socket.emit("connectToGame", {
         gameId,
         playerName,
-        id: getPlayerId(),
+        id: playerId,
       });
     },
-    [getPlayerId, saveGameData],
+    [playerId, saveGameData],
   );
 
   const toggleCardsVisibility = useCallback(() => {
@@ -107,9 +93,8 @@ export function usePokerGame() {
   //#endregion
   //#region helpers
   const isPlayerOnGame = useMemo(() => {
-    const playerId = getPlayerId();
     return (game?.players?.findIndex((p) => p.id === playerId) ?? -1) > -1;
-  }, [game?.players, getPlayerId]);
+  }, [game?.players, playerId]);
   const resetCard = useCallback(() => {
     if (playerId) {
       updatePlayerCard("");
@@ -117,14 +102,6 @@ export function usePokerGame() {
   }, [updatePlayerCard, playerId]);
   //#endregion
   //#region (re)connection helpers
-
-  const manualReconnect = useCallback(() => {
-    const storedGameData = getStoredGameData();
-    if (!storedGameData) return;
-
-    resetReconnectionAttempts();
-    attemptReconnection();
-  }, [attemptReconnection, getStoredGameData, resetReconnectionAttempts]);
 
   const isCurrentPlayerDisconnected = useCallback(() => {
     if (!game || !playerId) return false;
@@ -196,7 +173,7 @@ export function usePokerGame() {
           socket.emit("connectToGame", {
             gameId: storedGameData.gameId,
             playerName: storedGameData.playerName,
-            id: getPlayerId(),
+            id: playerId,
           });
         }
       }
@@ -210,7 +187,6 @@ export function usePokerGame() {
     };
   }, [
     attemptReconnection,
-    getPlayerId,
     getStoredGameData,
     isReconnecting,
     onPlayerClientDisconnect,
