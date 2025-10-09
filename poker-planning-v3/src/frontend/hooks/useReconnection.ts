@@ -1,6 +1,6 @@
 import { useCallback, useState, useRef } from "react";
 import { socket } from "../lib/socket";
-import { nanoid } from "nanoid";
+import { useUserId } from "./useUserId";
 
 const STORAGE_KEYS = {
   GAME_DATA: "poker-game-data",
@@ -11,7 +11,9 @@ const maxReconnectionAttempts = 5;
 const reconnectionDelay = 2000;
 const maxStoredDataAge = 5 * 60 * 1000;
 
-export function useReconnection(playerId: string | undefined) {
+export function useReconnection() {
+  const playerId = useUserId();
+
   const [isReconnecting, setIsReconnecting] = useState(false);
   const reconnectionAttemptsRef = useRef(0);
 
@@ -96,7 +98,7 @@ export function useReconnection(playerId: string | undefined) {
       socket.emit("connectToGame", {
         gameId,
         playerName,
-        id: playerId ?? nanoid(),
+        id: playerId,
       });
     }, reconnectionDelay);
   }, [
@@ -110,6 +112,14 @@ export function useReconnection(playerId: string | undefined) {
     saveReconnectionAttempts(0);
   }, [saveReconnectionAttempts]);
 
+  const manualReconnect = useCallback(() => {
+    const storedGameData = getStoredGameData();
+    if (!storedGameData) return;
+
+    resetReconnectionAttempts();
+    attemptReconnection();
+  }, [attemptReconnection, getStoredGameData, resetReconnectionAttempts]);
+
   return {
     isReconnecting,
     reconnectionAttempts: reconnectionAttemptsRef.current,
@@ -118,5 +128,6 @@ export function useReconnection(playerId: string | undefined) {
     clearStoredGameData,
     attemptReconnection,
     resetReconnectionAttempts,
+    manualReconnect,
   };
 }
