@@ -17,9 +17,8 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-// Rota de teste HTTP opcional
-app.get("/api/ping", (req, res) => {
-  res.json({ message: "pong" });
+app.get("/api/health-check", (_req, res) => {
+  res.json({ ok: true });
 });
 
 // Eventos do WebSocket

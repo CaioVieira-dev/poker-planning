@@ -112,6 +112,39 @@ function resetPlayersCard({ gameId }: { gameId: string }) {
   });
 }
 
+async function keepGamesAlive() {
+  const hasGameRunning = games.size > 0;
+
+  if (!hasGameRunning) {
+    console.log("Nenhum jogo ativo, keep-alive não será executado");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.BASE_URL || "http://localhost:3001"}/api/health-check`,
+    );
+
+    if (response.ok) {
+      console.log(
+        "Mantendo os jogos com sucesso. Jogos em andamento:",
+        games.size,
+      );
+    } else {
+      console.error("Erro no keep-alive:", response.status);
+    }
+  } catch (error) {
+    console.error("Erro ao executar keep-alive:", error);
+  }
+
+  setTimeout(
+    () => {
+      keepGamesAlive();
+    },
+    13 * 60 * 1000,
+  );
+}
+
 function createGame(_gameId: string) {
   const [...gamesIds] = games.keys();
   const gameId = !gamesIds.includes(_gameId) ? _gameId : nanoid();
@@ -120,6 +153,9 @@ function createGame(_gameId: string) {
     players: [],
     possibleCards: defaultPokerCards,
   });
+  if (games.size === 1) {
+    keepGamesAlive();
+  }
 
   return gameId;
 }
