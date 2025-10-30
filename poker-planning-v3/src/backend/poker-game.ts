@@ -114,7 +114,6 @@ function resetPlayersCard({ gameId }: { gameId: string }) {
 
 async function keepGamesAlive() {
   const hasGameRunning = games.size > 0;
-  console.log("keepalive");
 
   if (!hasGameRunning) {
     console.log("Nenhum jogo ativo, keep-alive não será executado");
@@ -140,7 +139,6 @@ async function keepGamesAlive() {
 
   setTimeout(
     () => {
-      console.log("timeout");
       keepGamesAlive();
     },
     13 * 60 * 1000,
