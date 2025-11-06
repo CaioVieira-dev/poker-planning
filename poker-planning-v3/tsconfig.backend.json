@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "strict": true,
     "esModuleInterop": true,
@@ -11,11 +11,11 @@
     "noEmit": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./*"]
     }
   },
-  "include": ["src/backend/**/*", "src/shared/**/*"],
+  "include": ["src/backend/**/*.ts", "src/shared/**/*.ts"],
   "exclude": ["node_modules", "src/frontend", "dist"]
 }
