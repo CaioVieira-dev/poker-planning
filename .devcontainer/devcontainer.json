@@ -37,6 +37,10 @@
 			] 
 		}
 	},
+  "remoteEnv": {
+    "NODE_OPTIONS": ""
+  },
+ "postCreateCommand": "echo 'unset NODE_OPTIONS' >> ~/.zshrc",
 	"remoteUser": "vscode"
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
