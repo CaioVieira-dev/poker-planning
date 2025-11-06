@@ -10,12 +10,12 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "outDir": "./dist",
-    "rootDir": "./src/backend",
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/backend/**/*"],
+  "include": ["src/backend/**/*", "src/shared/**/*"],
   "exclude": ["node_modules", "src/frontend", "dist"]
 }

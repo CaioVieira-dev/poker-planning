@@ -77,10 +77,11 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 
 # Copie o backend compilado (TypeScript → JavaScript)
+# Com rootDir: "./src", o output será dist/backend/ e dist/shared/
 COPY --from=backend-builder /app/dist ./dist
 
-# Copie o frontend buildado (Vite com root: "src/frontend" gera dist em src/frontend/dist)
-COPY --from=frontend-builder /app/dist /usr/share/nginx/html
+# Copie o frontend buildado (Vite gera em src/frontend/dist)
+COPY --from=frontend-builder /app/src/frontend/dist /usr/share/nginx/html
 
 # Crie a configuração do Nginx
 RUN mkdir -p /run/nginx
