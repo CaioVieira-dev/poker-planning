@@ -9,7 +9,7 @@ WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copie o package.json e pnpm-lock.yaml
-COPY src/package.json src/pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* ./
 
 # Instale todas as dependências (incluindo devDependencies para o build)
 RUN pnpm install --frozen-lockfile
@@ -29,8 +29,8 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=dependencies /app/package.json ./
 
 # Copie os arquivos necessários para compilar o backend
-COPY src/backend ./backend
-COPY src/tsconfig.backend.json ./tsconfig.backend.json
+COPY backend ./backend
+COPY tsconfig.backend.json ./tsconfig.backend.json
 
 # Compile o TypeScript do backend
 RUN pnpm run build:backend
@@ -50,12 +50,12 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=dependencies /app/package.json ./
 
 # Copie os arquivos do frontend
-COPY src/frontend ./frontend
-COPY src/vite.config.ts ./vite.config.ts
-COPY src/tsconfig.json ./tsconfig.json
-COPY src/tsconfig.app.json ./tsconfig.app.json
-COPY src/tsconfig.node.json ./tsconfig.node.json
-COPY src/index.html ./index.html
+COPY frontend ./frontend
+COPY vite.config.ts ./vite.config.ts
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.app.json ./tsconfig.app.json
+COPY tsconfig.node.json ./tsconfig.node.json
+COPY index.html ./index.html
 
 # Build do Vite
 RUN pnpm run build:frontend
@@ -72,7 +72,7 @@ RUN apk add --no-cache nginx supervisor && \
 WORKDIR /app
 
 # Copie o package.json e instale apenas dependências de produção
-COPY src/package.json src/pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --prod --frozen-lockfile
 
 # Copie o backend compilado (TypeScript → JavaScript)
