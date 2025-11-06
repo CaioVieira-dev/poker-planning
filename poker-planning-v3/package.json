@@ -6,7 +6,7 @@
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "tsx watch src/backend/server.ts",
-    "build:backend": "tsc -p tsconfig.backend.json",
+    "build:backend": "tsc -p tsconfig.backend.json && tsc-alias -p tsconfig.backend.json",
     "build:frontend": "vite build",
     "build": "pnpm run build:backend && pnpm run build:frontend",
     "lint": "eslint .",
@@ -44,6 +44,7 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.4",
     "typescript": "~5.8.3",
