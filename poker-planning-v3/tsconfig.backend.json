@@ -9,13 +9,13 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": false,
-    "outDir": "./dist/backend",
-    "rootDir": "./backend",
+    "outDir": "./dist",
+    "rootDir": "./src/backend",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["backend/**/*"],
-  "exclude": ["node_modules", "frontend", "dist"]
+  "include": ["src/backend/**/*"],
+  "exclude": ["node_modules", "src/frontend", "dist"]
 }

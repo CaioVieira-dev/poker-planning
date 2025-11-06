@@ -29,7 +29,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=dependencies /app/package.json ./
 
 # Copie os arquivos necessários para compilar o backend
-COPY backend ./backend
+COPY src/backend ./src/backend
 COPY tsconfig.backend.json ./tsconfig.backend.json
 
 # Compile o TypeScript do backend
@@ -50,7 +50,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=dependencies /app/package.json ./
 
 # Copie os arquivos do frontend
-COPY frontend ./frontend
+COPY src/frontend ./src/frontend
 COPY vite.config.ts ./vite.config.ts
 COPY tsconfig.json ./tsconfig.json
 COPY tsconfig.app.json ./tsconfig.app.json
@@ -76,10 +76,10 @@ COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --prod --frozen-lockfile
 
 # Copie o backend compilado (TypeScript → JavaScript)
-COPY --from=backend-builder /app/dist/backend ./dist/backend
+COPY --from=backend-builder /app/dist ./dist
 
 # Copie o frontend buildado
-COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
+COPY --from=frontend-builder /app/dist /usr/share/nginx/html
 
 # Crie a configuração do Nginx
 RUN mkdir -p /run/nginx
