@@ -32,6 +32,7 @@ COPY --from=dependencies /app/package.json ./
 COPY src/backend ./src/backend
 COPY src/shared ./src/shared
 COPY tsconfig.backend.json ./tsconfig.backend.json
+COPY fix-imports.mjs ./fix-imports.mjs
 
 # Compile o TypeScript do backend
 RUN pnpm run build:backend
