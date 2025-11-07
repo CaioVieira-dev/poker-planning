@@ -6,7 +6,7 @@
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "tsx watch src/backend/server.ts",
-    "build:backend": "tsc -p tsconfig.backend.json && tsc-alias -p tsconfig.backend.json",
+    "build:backend": "tsc -p tsconfig.backend.json && tsc-alias -p tsconfig.backend.json && node fix-imports.mjs",
     "build:frontend": "vite build",
     "build": "pnpm run build:backend && pnpm run build:frontend",
     "lint": "eslint .",
