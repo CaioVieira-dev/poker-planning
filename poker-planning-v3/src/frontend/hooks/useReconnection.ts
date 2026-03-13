@@ -109,7 +109,6 @@ export function useReconnection() {
 
   const manualReconnect = useCallback(() => {
     const storedGameData = getStoredGameData();
-    console.log("storedGameData", storedGameData);
     if (!storedGameData) {
       return;
     }
