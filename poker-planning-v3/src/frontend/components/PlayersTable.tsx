@@ -208,7 +208,7 @@ function CircleLayout() {
           );
         })}
       </div>
-      <div className="text-muted-foreground mb-6 text-center text-sm">
+      <div className="text-muted-foreground mt-48 mb-6 text-center text-sm">
         Um poker planning que não minera bitcoin na aba XD
       </div>
     </div>
