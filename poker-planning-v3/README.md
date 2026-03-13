@@ -3,8 +3,8 @@
 Depois de clonar o projeto, abra o projeto com o devcontainers(instale a extensão do vscode, se não tiver instalado). Depois disso, o processo é bem direto
 
 ```bash
-cd poker-planning-v3
 sudo chown -R vscode:vscode .
+cd poker-planning-v3
 pnpm install
 #se o pnpm pedir permissão para rodar scripts, aceite com o "y"
 ```

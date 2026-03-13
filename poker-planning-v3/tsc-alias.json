@@ -1,0 +1,14 @@
+{
+  "baseUrl": "./src",
+  "paths": {
+    "@/*": ["./*"]
+  },
+  "outDir": "./dist",
+  "replacementRules": [
+    {
+      "pattern": "^@/",
+      "replacement": "./",
+      "resolveRelativePath": true
+    }
+  ]
+}

@@ -23,7 +23,7 @@ function isCardOpen(p: playerType, playerId: string | undefined) {
 }
 
 export function PlayersTable() {
-  const layout = useUrlParam("layout", "table");
+  const layout = useUrlParam("layout", "circle");
 
   return (
     <>
