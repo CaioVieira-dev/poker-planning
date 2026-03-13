@@ -9,7 +9,6 @@ const STORAGE_KEYS = {
 
 const maxReconnectionAttempts = 5;
 const reconnectionDelay = 2000;
-const maxStoredDataAge = 5 * 60 * 1000;
 
 export function useReconnection() {
   const playerId = useUserId();
@@ -31,15 +30,11 @@ export function useReconnection() {
   const getStoredGameData = useCallback(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.GAME_DATA);
-      if (!stored) return null;
-
-      const gameData = JSON.parse(stored);
-
-      if (Date.now() - gameData.lastConnectionTime > maxStoredDataAge) {
-        localStorage.removeItem(STORAGE_KEYS.GAME_DATA);
-        localStorage.removeItem(STORAGE_KEYS.RECONNECTION_ATTEMPTS);
+      if (!stored) {
         return null;
       }
+
+      const gameData = JSON.parse(stored);
 
       return gameData;
     } catch {
@@ -114,7 +109,9 @@ export function useReconnection() {
 
   const manualReconnect = useCallback(() => {
     const storedGameData = getStoredGameData();
-    if (!storedGameData) return;
+    if (!storedGameData) {
+      return;
+    }
 
     resetReconnectionAttempts();
     attemptReconnection();
